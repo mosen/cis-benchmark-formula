@@ -1,7 +1,8 @@
 ---
 driver:
   name: vagrant
-
+  provider: vmware_fusion
+  
 provisioner:
   name: salt_solo
   formula: cis-benchmark
