@@ -1,0 +1,84 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+cis_benchmark:
+  CentOS:
+    # 1.2.1
+    gpg_key_url: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7
+    # 1.2.2
+    gpgcheck: True
+    # 1.2.3
+    yum_update: True
+    # 1.2.4
+    verify_installed_packages: True
+    # 1.3.1
+    install_aide: True
+    daemon_umask: '027'  # 3.1
+    remove_pkgs:
+      - setroubleshoot  # 1.4.4
+      - mcstrans  # 1.4.5
+      - telnet-server  # 2.1.1
+      - telnet  # 2.1.2
+      - rsh-server  # 2.1.3
+      - rsh  # 2.1.4
+      - ypbind  # 2.1.5
+      - ypserv  # 2.1.6
+      - tftp  # 2.1.7
+      - tftp-server  # 2.1.8
+      - talk  # 2.1.9
+      - talk-server  # 2.1.10
+      - xinetd  # 2.1.11
+      - xorg-x11-server-common  # 3.2
+      - dhcp  # 3.5
+      - openldap-servers  # 3.7
+      - openldap-clients  # 3.7
+      - bind  # 3.9
+      - vsftpd  # 3.10
+      - httpd  # 3.11
+      - dovecot  # 3.12
+      - samba  # 3.13
+      - squid  # 3.14
+      - net-snmp  # 3.15
+      
+      
+    disable_services:
+      - chargen-dgram  # 2.1.12
+      - chargen-stream  # 2.1.13
+      - daytime-dgram  # 2.1.14
+      - daytime-stream  # 2.1.15
+      - echo-dgram  # 2.1.16
+      - echo-stream  # 2.1.17
+      - tcpmux-server  # 2.1.18
+      - avahi-daemon  # 3.3
+      - cups  # 3.4
+      - nfslock  # 3.8
+      - rpcgssd  # 3.8
+      - rpcbind  # 3.8
+      - rpcidmapd  # 3.8
+      - rpcsvcgssd  # 3.8
+      
+    sysctl_enable:
+      - net.ipv4.conf.all.log_martians  # 4.2.4
+      - net.ipv4.conf.default.log_martians
+      - net.ipv4.icmp_echo_ignore_broadcasts  # 4.2.5
+      - net.ipv4.icmp_ignore_bogus_error_responses  # 4.2.6 
+      - net.ipv4.conf.all.rp_filter  # 4.2.7
+      - net.ipv4.conf.default.rp_filter
+      - net.ipv4.tcp_syncookies  # 4.2.8
+      
+    sysctl_disable:
+      - net.ipv4.ip_forward  # 4.1.1
+      - net.ipv4.conf.all.send_redirects  # 4.1.2
+      - net.ipv4.conf.default.send_redirects
+      - net.ipv4.conf.all.accept_source_route  # 4.2.1
+      - net.ipv4.conf.default.accept_source_route
+      - net.ipv4.conf.all.accept_redirects  # 4.2.2
+      - net.ipv4.conf.default.accept_redirects    
+      - net.ipv4.conf.all.secure_redirects  # 4.2.3
+      - net.ipv4.conf.default.secure_redirects
+      - net.ipv6.conf.all.accept_ra  # 4.4.1.1
+      - net.ipv6.conf.default.accept_ra
+      - net.ipv6.conf.all.accept_redirect  # 4.4.1.2
+      - net.ipv6.conf.default.accept_redirect
+              
+  
+    
