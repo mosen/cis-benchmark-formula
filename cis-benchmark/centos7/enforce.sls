@@ -3,6 +3,37 @@
 
 {% from "cis-benchmark/map.jinja" import cis_benchmark with context %}
 
+# Services disabled (from all benchmark sections)
+{% for service in cis_benchmark.services_disable %}
+{{ service }}:
+  service.dead:
+    - enable: False
+{% endfor %}
+
+# Packages removed (from all benchmark sections)
+{% for pkg in cis_benchmark.pkgs_remove %}
+{{ pkg }}:
+  pkg.removed
+{% endfor %}
+
+
+# Sysctl variables enabled (value = 1)
+{% for sysctlv in cis_benchmark.sysctl_enable %}
+{{ sysctlv }}:
+  sysctl.present:
+    value: 1
+{% endfor %}
+
+# Sysctl variables disabled (value = 0)
+{% for sysctlv in cis_benchmark.sysctl_disable %}
+{{ sysctlv }}:
+  sysctl.present:
+    value: 0
+{% endfor %}
+
+# Not Included: 1.1 Filesystem Configuration
+
+
 # 1.2.2
 {% if cis_benchmark.gpgcheck is True %}
 /etc/yum.conf:
@@ -13,11 +44,15 @@
 {% endif %}
 
 # 1.2.3
-{% if cis_benchmark.yum_update is True %}
+{% if cis_benchmark.update is True %}
+/usr/bin/yum update:
+  cmd.run:
+    - unless:
+      - /usr/bin/yum check-update
 {% endif %}
 
 # 1.3.1
-{% if cis_benchmark.install_aide is True %}
+{% if cis_benchmark.aide is True %}
 aide:
   pkg.installed
   
@@ -36,8 +71,10 @@ init_aide:
 {% endif %}
 
 # 1.4.1
+{% if cis_benchmark.selinux is True %}
 enforcing:
   selinux.mode
+{% endif %}
   
 
 # 1.5.1 - 1.5.2
@@ -53,74 +90,80 @@ kernel.randomize_va_space:
   sysctl.present:
     - value: 2
     
-{% for pkg in cis_benchmark.remove_pkgs %}
-{{ pkg }}:
-  pkg.absent
-{% endfor %}
+# 4.5.1
+{% if cis_benchmark.tcpwrappers is True %}
+tcp_wrappers:
+  pkg.installed
   
-# 2.1.12
-chargen-dgram:
-  service.dead:
-    - enable: False
-    
-# 4.1.1
-net.ipv4.ip_forward:
-  sysctl.present:
-    - value: 0
-    
-# 4.1.2
-net.ipv4.conf.all.send_redirects:
-  sysctl.present:
-    - value: 0
-    
-net.ipv4.conf.default.send_redirects:
-  sysctl.present:
-    - value: 0
+# Incomplete: need to generate hosts.allow
+{% endif %}
+
+# 5.1
+{% if cis_benchmark.rsyslog is True %}
+rsyslog:
+  pkg.installed
   
-# 4.2.1
-net.ipv4.conf.all.accept_source_route:
-  sysctl.present:
-    - value: 0
+rsyslog:
+  service.running:
+    - enable: True
+    - require:
+      - pkg: rsyslog
+      
+# Omitted: 5.1.3, 5.1.4, 5.1.5
+{% endif %}
+
+# 6.1.4
+/etc/crontab:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600
     
-net.ipv4.conf.default.accept_source_route:
-  sysctl.present:
-    - value: 0
-    
-# 4.2.2
-net.ipv4.conf.all.accept_redirects:
-  sysctl.present:
-    - value: 0
-    
-net.ipv4.conf.default.accept_redirects:
-  sysctl.present:
-    - value: 0
-    
-# 4.2.3
-net.ipv4.conf.all.secure_redirects:
-  sysctl.present:
-    - value: 0
+# 6.1.5
+/etc/cron.hourly:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600
  
-net.ipv4.conf.default.secure_redirects:
-  sysctl.present:
-    - value: 0   
+# 6.1.6
+/etc/cron.daily:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600   
+
+# 6.1.7
+/etc/cron.weekly:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600
     
-# 4.2.4
-net.ipv4.conf.all.log_martians:
-  sysctl.present:
-    - value: 1
+# 6.1.8
+/etc/cron.monthly:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600
+
+# 6.1.9
+/etc/cron.d:
+  file.directory:
+    - user: root
+    - group: root
+    - mode: 700
     
-net.ipv4.conf.default.log_martians:
-  sysctl.present:
-    - value: 1
+# 6.1.10
+/etc/at.deny:
+  file.absent
+
+/etc/at.allow:
+  file.managed:
+    - user: root
+    - group: root
+    - mode: 600
     
-# 4.2.5
-net.ipv4.icmp_echo_ignore_broadcasts:
-  sysctl.present:
-    - value: 1
-    
-# 4.2.6
-net.ipv4.icmp_ignore_bogus_error_responses:
-  sysctl.present:
-    - value: 1
-    
+# Omitted: 6.1.11
+
 
