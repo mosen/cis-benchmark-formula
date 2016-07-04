@@ -4,14 +4,14 @@
 {% from "cis-benchmark/map.jinja" import cis_benchmark with context %}
 
 # Services disabled (from all benchmark sections)
-{% for service in cis_benchmark.services_disable %}
+{% for service in cis_benchmark.disable_services %}
 {{ service }}:
   service.dead:
     - enable: False
 {% endfor %}
 
 # Packages removed (from all benchmark sections)
-{% for pkg in cis_benchmark.pkgs_remove %}
+{% for pkg in cis_benchmark.remove_pkgs %}
 {{ pkg }}:
   pkg.removed
 {% endfor %}
@@ -21,21 +21,21 @@
 {% for sysctlv in cis_benchmark.sysctl_enable %}
 {{ sysctlv }}:
   sysctl.present:
-    value: 1
+    - value: 1
 {% endfor %}
 
 # Sysctl variables disabled (value = 0)
 {% for sysctlv in cis_benchmark.sysctl_disable %}
 {{ sysctlv }}:
   sysctl.present:
-    value: 0
+    - value: 0
 {% endfor %}
 
 # Not Included: 1.1 Filesystem Configuration
 
 
 # 1.2.2
-{% if cis_benchmark.gpgcheck is True %}
+{% if cis_benchmark.gpgcheck %}
 /etc/yum.conf:
   file.line:
     - content: 'gpgcheck=1'
@@ -44,7 +44,7 @@
 {% endif %}
 
 # 1.2.3
-{% if cis_benchmark.update is True %}
+{% if cis_benchmark.update %}
 /usr/bin/yum update:
   cmd.run:
     - unless:
@@ -52,7 +52,7 @@
 {% endif %}
 
 # 1.3.1
-{% if cis_benchmark.aide is True %}
+{% if cis_benchmark.aide %}
 aide:
   pkg.installed
   
@@ -67,11 +67,11 @@ init_aide:
 /usr/sbin/aide --check:
   cron.present:
     - user: root
-    - special: @daily
+    - special: '@daily'
 {% endif %}
 
 # 1.4.1
-{% if cis_benchmark.selinux is True %}
+{% if cis_benchmark.selinux %}
 enforcing:
   selinux.mode
 {% endif %}
@@ -91,7 +91,7 @@ kernel.randomize_va_space:
     - value: 2
     
 # 4.5.1
-{% if cis_benchmark.tcpwrappers is True %}
+{% if cis_benchmark.tcpwrappers %}
 tcp_wrappers:
   pkg.installed
   
@@ -99,12 +99,14 @@ tcp_wrappers:
 {% endif %}
 
 # 5.1
-{% if cis_benchmark.rsyslog is True %}
-rsyslog:
-  pkg.installed
+{% if cis_benchmark.rsyslog %}
+rsyslog_pkg:
+  pkg.installed:
+    - name: rsyslog
   
-rsyslog:
+rsyslog_service:
   service.running:
+    - name: rsyslog
     - enable: True
     - require:
       - pkg: rsyslog
@@ -121,31 +123,31 @@ rsyslog:
     
 # 6.1.5
 /etc/cron.hourly:
-  file.managed:
+  file.directory:
     - user: root
     - group: root
-    - mode: 600
+    - mode: 700
  
 # 6.1.6
 /etc/cron.daily:
-  file.managed:
+  file.directory:
     - user: root
     - group: root
-    - mode: 600   
+    - mode: 700
 
 # 6.1.7
 /etc/cron.weekly:
-  file.managed:
+  file.directory:
     - user: root
     - group: root
-    - mode: 600
+    - mode: 700
     
 # 6.1.8
 /etc/cron.monthly:
-  file.managed:
+  file.directory:
     - user: root
     - group: root
-    - mode: 600
+    - mode: 700
 
 # 6.1.9
 /etc/cron.d:

@@ -2,7 +2,7 @@
 # vim: ft=jinja
 
 {## Start with  defaults from defaults.sls ##}
-{% import_yaml 'template/defaults.yaml' as default_settings %}
+{% import_yaml 'cis-benchmark/defaults.yaml' as default_settings %}
 
 {% set os_map = salt['grains.filter_by']({
     'CentOS': {}
@@ -11,12 +11,12 @@
   , merge=salt['pillar.get']('cis_benchmark:lookup'))
 %}
 {## Merge the flavor_map to the default settings ##}
-{% do default_settings.template.update(os_family_map) %}
+{% do default_settings.cis_benchmark.update(os_map) %}
 
 {## Merge in template:lookup pillar ##}
 {% set cis_benchmark = salt['pillar.get'](
-        'cis-benchmark',
-        default=default_settings.cis_benchmark.get(salt['grains.item']('os'), {}),
+        'cis_benchmark',
+        default=default_settings.cis_benchmark,
         merge=True
     )
 %}

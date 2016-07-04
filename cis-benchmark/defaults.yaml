@@ -1,84 +1,151 @@
 # -*- coding: utf-8 -*-
 # vim: ft=yaml
+
+# CentOS 7
 cis_benchmark:
-  CentOS:
-    # 1.2.1
-    gpg_key_url: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7
-    # 1.2.2
-    gpgcheck: True
-    # 1.2.3
-    yum_update: True
-    # 1.2.4
-    verify_installed_packages: True
-    # 1.3.1
-    install_aide: True
-    daemon_umask: '027'  # 3.1
-    remove_pkgs:
-      - setroubleshoot  # 1.4.4
-      - mcstrans  # 1.4.5
-      - telnet-server  # 2.1.1
-      - telnet  # 2.1.2
-      - rsh-server  # 2.1.3
-      - rsh  # 2.1.4
-      - ypbind  # 2.1.5
-      - ypserv  # 2.1.6
-      - tftp  # 2.1.7
-      - tftp-server  # 2.1.8
-      - talk  # 2.1.9
-      - talk-server  # 2.1.10
-      - xinetd  # 2.1.11
-      - xorg-x11-server-common  # 3.2
-      - dhcp  # 3.5
-      - openldap-servers  # 3.7
-      - openldap-clients  # 3.7
-      - bind  # 3.9
-      - vsftpd  # 3.10
-      - httpd  # 3.11
-      - dovecot  # 3.12
-      - samba  # 3.13
-      - squid  # 3.14
-      - net-snmp  # 3.15
-      
-      
-    disable_services:
-      - chargen-dgram  # 2.1.12
-      - chargen-stream  # 2.1.13
-      - daytime-dgram  # 2.1.14
-      - daytime-stream  # 2.1.15
-      - echo-dgram  # 2.1.16
-      - echo-stream  # 2.1.17
-      - tcpmux-server  # 2.1.18
-      - avahi-daemon  # 3.3
-      - cups  # 3.4
-      - nfslock  # 3.8
-      - rpcgssd  # 3.8
-      - rpcbind  # 3.8
-      - rpcidmapd  # 3.8
-      - rpcsvcgssd  # 3.8
-      
-    sysctl_enable:
-      - net.ipv4.conf.all.log_martians  # 4.2.4
-      - net.ipv4.conf.default.log_martians
-      - net.ipv4.icmp_echo_ignore_broadcasts  # 4.2.5
-      - net.ipv4.icmp_ignore_bogus_error_responses  # 4.2.6 
-      - net.ipv4.conf.all.rp_filter  # 4.2.7
-      - net.ipv4.conf.default.rp_filter
-      - net.ipv4.tcp_syncookies  # 4.2.8
-      
-    sysctl_disable:
-      - net.ipv4.ip_forward  # 4.1.1
-      - net.ipv4.conf.all.send_redirects  # 4.1.2
-      - net.ipv4.conf.default.send_redirects
-      - net.ipv4.conf.all.accept_source_route  # 4.2.1
-      - net.ipv4.conf.default.accept_source_route
-      - net.ipv4.conf.all.accept_redirects  # 4.2.2
-      - net.ipv4.conf.default.accept_redirects    
-      - net.ipv4.conf.all.secure_redirects  # 4.2.3
-      - net.ipv4.conf.default.secure_redirects
-      - net.ipv6.conf.all.accept_ra  # 4.4.1.1
-      - net.ipv6.conf.default.accept_ra
-      - net.ipv6.conf.all.accept_redirect  # 4.4.1.2
-      - net.ipv6.conf.default.accept_redirect
+  # 1.2.1
+  gpg_key_url: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7
+  # 1.2.2
+  gpgcheck: True
+  # 1.2.3
+  update: False
+  # 1.2.4
+  verify_installed_packages: True
+  
+  # 1.3.1, 1.3.2 - Install and configure AIDE
+  aide: True
+
+  # 1.4.2 - Enable SELinux if true
+  selinux: False
+
+  # 4.5 Install and configure TCPWrappers if true
+  tcpwrappers: True
+
+  # 5.1 Use rsyslog instead of syslogd
+  rsyslog: True
+
+  daemon_umask: '027'  # 3.1
+
+  remove_pkgs:
+    # 1.4.4
+    - setroubleshoot
+    # 1.4.5
+    - mcstrans
+    # 2.1.1
+    - telnet-server
+    # 2.1.2
+    - telnet
+    # 2.1.3
+    - rsh-server
+    # 2.1.4
+    - rsh
+    # 2.1.5
+    - ypbind
+    # 2.1.6
+    - ypserv
+    # 2.1.7
+    - tftp
+    # 2.1.8
+    - tftp-server
+    # 2.1.9
+    - talk
+    # 2.1.10
+    - talk-server
+    # 2.1.11
+    - xinetd
+    # 3.2
+    - xorg-x11-server-common
+    # 3.5
+    - dhcp
+    # 3.7
+    - openldap-servers
+    - openldap-clients
+    # 3.9
+    - bind
+    # 3.10
+    - vsftpd
+    # 3.11
+    # - httpd
+    # 3.12
+    - dovecot
+    # 3.13
+    - samba
+    # 3.14
+    - squid
+    # 3.15
+    - net-snmp
+  
+  enable_services:
+    # 4.7
+    - firewalld
+    # 6.1.2
+    - crond
+  
+  disable_services:
+    # 2.1.12
+    - chargen-dgram
+    # 2.1.13
+    - chargen-stream
+    # 2.1.14
+    - daytime-dgram
+    # 2.1.15
+    - daytime-stream
+    # 2.1.16
+    - echo-dgram
+    # 2.1.17
+    - echo-stream
+    # 2.1.18
+    - tcpmux-server
+    # 3.3
+    - avahi-daemon
+    # 3.4
+    - cups
+    # 3.8
+    - nfslock
+    - rpcgssd
+    - rpcbind
+    - rpcidmapd
+    - rpcsvcgssd
+  
+  sysctl_enable:
+    # 4.2.4
+    - net.ipv4.conf.all.log_martians
+    - net.ipv4.conf.default.log_martians
+    # 4.2.5
+    - net.ipv4.icmp_echo_ignore_broadcasts
+    # 4.2.6
+    - net.ipv4.icmp_ignore_bogus_error_responses
+    # 4.2.7
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.conf.default.rp_filter
+    # 4.2.8
+    - net.ipv4.tcp_syncookies
+    # 4.4.2
+    - net.ipv6.conf.all.disable_ipv6
+  
+  sysctl_disable:
+    # 1.6.1
+    - fs.suid_dumpable
+    # 4.1.1
+    - net.ipv4.ip_forward
+    # 4.1.2
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.default.send_redirects
+    # 4.2.1
+    - net.ipv4.conf.all.accept_source_route
+    - net.ipv4.conf.default.accept_source_route
+    # 4.2.2
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.default.accept_redirects
+    # 4.2.3
+    - net.ipv4.conf.all.secure_redirects
+    - net.ipv4.conf.default.secure_redirects
+    # 4.4.1
+    - net.ipv6.conf.all.accept_ra
+    - net.ipv6.conf.default.accept_ra
+    # 4.4.1.2
+    - net.ipv6.conf.all.accept_redirects
+    - net.ipv6.conf.default.accept_redirects
               
   
     
