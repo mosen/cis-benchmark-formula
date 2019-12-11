@@ -3,10 +3,10 @@
 
 {% from "cis-benchmark/map.jinja" import cis_benchmark with context %}
 
-{% if salt['grains.item']('os') == 'CentOS' %}
+{% if grains['os'] == 'CentOS' %}
 
 # CentOS
-{% if salt['grains.item']('osmajorrelease') == '7' %}
+{% if grains['osmajorrelease']|int == 7 %}
 include:
   - cis-benchmark.centos7.enforce
 {% endif %}
